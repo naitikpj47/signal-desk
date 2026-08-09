@@ -1,0 +1,47 @@
+# SignalDesk signal-engine tuning.
+# Edit and save — the backend reloads this file automatically (mtime check),
+# no restart needed. Missing keys fall back to built-in defaults.
+#
+# NOTE: score thresholds are absolute, so adding/removing components or
+# raising weights changes how often BUY/SELL fire. Max bullish score with
+# these defaults: 1.0 + 1.5 + 1.5 + 0.5 + 1.0 + 0.75 + 0.5 = 6.75.
+
+indicators:
+  sma_fast: 20        # fast trend SMA period
+  sma_slow: 50        # slow trend SMA period
+  rsi_period: 14
+  macd_fast: 12
+  macd_slow: 26
+  macd_signal: 9
+  momentum_days: 10   # lookback for percent-change momentum
+  bb_period: 20       # Bollinger Band window
+  bb_std: 2.0         # Bollinger Band width in standard deviations
+  stoch_k: 14         # stochastic %K lookback (uses daily highs/lows)
+  stoch_d: 3          # stochastic %D smoothing
+  obv_sma: 20         # OBV is compared against its SMA of this length
+
+weights:
+  trend: 1.0          # SMA fast above/below slow
+  rsi: 1.5            # RSI beyond oversold/overbought threshold
+  macd_cross: 1.5     # MACD histogram sign flip on the latest bar
+  macd_hist: 0.5      # MACD histogram sign (no fresh cross)
+  momentum: 0.5       # 10-day momentum beyond +/- momentum_pct
+  bollinger: 1.0      # %B outside the bands (mean reversion)
+  stochastic: 0.75    # stochastic %D beyond oversold/overbought
+  obv: 0.5            # OBV above/below its average (volume confirmation)
+
+thresholds:
+  rsi_oversold: 30    # RSI below this is bullish
+  rsi_overbought: 70  # RSI above this is bearish
+  momentum_pct: 4.0   # abs % move that counts as momentum
+  bb_lower: 0.05      # %B below this = at lower band (bullish)
+  bb_upper: 0.95      # %B above this = at upper band (bearish)
+  stoch_oversold: 20  # %D below this is bullish
+  stoch_overbought: 80  # %D above this is bearish
+  buy_score: 1.5      # total score >= this => BUY
+  sell_score: -1.5    # total score <= this => SELL
+  confidence_divisor: 4.0   # confidence = min(|score| / divisor, 1)
+
+backtest:
+  initial_cash: 10000
+  fee_bps: 10         # transaction cost, basis points per trade (10 = 0.10%)
